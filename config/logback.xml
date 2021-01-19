@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<!-- curl -k "https://http://192.168.184.128/:8088/services/collector" \ -->
+<!--     -H "Authorization: Splunk CF179AE4-3C99-45F5-A7CC-3284AA91CF67" \ -->
+<!--     -d '{"event": "Hello, world!", "sourcetype": "manual"}' -->
+
+
+<configuration>
+	<property name="SPLUNK_URL"		   value="http://192.168.184.128:8088/" />
+	<property name="SPLUNK_TOKEN"	   value="1ed364cd-125c-4fef-8c6b-1b35a05158bb" />
+	<property name="SPLUNK_HOST"       value="localhost" />
+	<property name="SPLUNK_SOURCE"     value="JavaDemo" />
+	<property name="SPLUNK_SOURCETYPE" value="java:logging" />
+
+	<appender name="splunk"
+		class="com.splunk.logging.HttpEventCollectorLogbackAppender">
+		<url>${SPLUNK_URL}</url>
+		<token>${SPLUNK_TOKEN}</token>
+
+		<host>${SPLUNK_HOST}</host>
+		<source>${SPLUNK_SOURCE}</source>
+		<sourcetype>${SPLUNK_SOURCETYPE}</sourcetype>
+		<ignoreExceptions>false</ignoreExceptions>
+		
+		<send_mode>sequential</send_mode>
+		
+		<disableCertificateValidation>true</disableCertificateValidation>
+		<batch_size_count>1</batch_size_count>
+
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%msg</pattern>
+		</layout>
+
+	</appender>
+
+	<appender name="console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%date{ISO8601} %level: %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="splunk" />
+		<appender-ref ref="console" />
+	</root>
+</configuration>
